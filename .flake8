@@ -1,0 +1,7 @@
+# TODO: Move this configuration into pyproject.toml when supported
+[flake8]
+# ignore the following:
+# W503: line break before binary operator
+max-line-length = 120
+ignore = W503
+exclude = docker, venv, .venv, .poetry

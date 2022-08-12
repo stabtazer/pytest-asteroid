@@ -1,0 +1,18 @@
+version: '2.1'
+
+services:
+
+  mysql_db:
+    build:
+      context: .
+      dockerfile: MySQL.Dockerfile
+    image: mysql_test_db
+    environment:
+      # Explicitly passing required environment variables to container
+      - MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD
+    # increasing max allowed packet allows for bigger data pre-loads
+    command: --max_allowed_packet=90000000
+    container_name: mysql_db_main
+    ports:
+      - '3307:3306'

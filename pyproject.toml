@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "pytest-asteroid"
+version = "0.4.0" # major.minor.patch managed by the developer(s)
+description = "PyTest plugin for docker-based testing on database images"
+authors = ["Emil Buus Sauer-Strømberg <emil.sauer@aurochsrecordings.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/stabtazer/pytest-asteroid"
+keywords= [
+    "pytest",
+    "testing",
+    "docker",
+    "compose",
+    "database",
+    "mysql"
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pytest = "^6.2.5 || 7.*"
+lovely-pytest-docker = "0.3.0"
+poetry = "^1.0"
+PyMySQL = "^1.0.2"
+docker-compose = "^1.29.2"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+
+[tool.mypy]
+warn_unused_configs = "True"
+disallow_untyped_defs = "False"
+ignore_missing_imports = "False"
+
+[tool.isort]
+known_third_party = ["pymysql", "pytest"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+# add option flags to pytest to include by default
+addopts = [
+    "-v",
+]
+
+[tool.poetry.plugins.pytest11]
+pytest-asteroid = "pytest_asteroid.asteroid"
+
+[build-system]
+requires = [
+    "poetry-core>=1.0.0"
+]
+build-backend = "poetry.core.masonry.api"
