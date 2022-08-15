@@ -2,7 +2,7 @@
 name = "pytest-asteroid"
 version = "0.4.0" # major.minor.patch managed by the developer(s)
 description = "PyTest plugin for docker-based testing on database images"
-authors = ["Emil Buus Sauer-Strømberg <emil.sauer@aurochsrecordings.com>"]
+authors = ["Emil Buus Sauer-Strømberg <emil.sauer@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/stabtazer/pytest-asteroid"
@@ -13,6 +13,12 @@ keywords= [
     "compose",
     "database",
     "mysql"
+]
+include = [
+    "LICENSE",
+]
+classifiers = [
+    "Framework :: Pytest"
 ]
 
 

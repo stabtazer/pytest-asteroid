@@ -22,91 +22,63 @@ $ poetry add pytest-asteroid --dev
 
 ---
 ## Examples of usage
-Use the examples in _*tests/*_ for inspiration on how to use __pytest-asteroid__.
 
----
-## pre-commit
+#### Using the get_docker_db_port fixture
+```python
+# content from conftest.py
 
-Use pre-commit for enforcing various checks before pushing to Git (pre-commit hook).
+###############################################################################
+# * Connection to test database
+# This fixture uses the ASTEROID fixture get_docker_db_port which, on first
+# session-scoped call, will envoke the docker_service startup.
+###############################################################################
+# Overwrite this fixture if a custom connection type is required
+###############################################################################
 
-### Table of content
-1. [Installation](#installation)
-2. [How to use](#how-to-use)
-3. [Documentation](#documentation)
 
-### Installation
-To install pre-commit to your system run:
-
-```
-$ pip install pre-commit
-```
-Then verify the installation by checking the version:
-```
-$ pre-commit --version
-```
-
-**_Why not install with poetry instead of pip?_**
-
-_The reason we use pip to install pre-commit is because the git hooks are installed outside of the poetry environment. Pre-commit pulls the dependencies required for each repository to our local development machine. Note that every pre-commit configuration needs to be activated to the related Git repository by using pre-commit install command  (See section below #Activation)._
-
-### Configuration
-Configuration is done by using the following files:
-- .pre-commit-config.yml
-- pyproject.toml
-- .flake8
-
-The `.pre-commit-config.yml` configuration file is placed in the root of the project repository. The individual plugin configurations---used by pre-commit--- are gathered in the `pyproject.toml` (also used by poetry). Currently flake8 plugin is not supported, so this plugin configuration should reside in a `.flake8` file.
-
-### How to use
-From the root of your local project repository execute the following command:
+# NOTE: Here we are using class fixture as we need the connection to close again
+# after each test class run if we want to reset state.
+# If attemting to reset state, while a connection is open,
+# we will have a deadlock.
+@pytest.fixture(scope="class")
+def get_connection(get_docker_db_port):
+    conn = pymysql.connect(
+        database=os.environ["MYSQL_DATABASE"],
+        port=get_docker_db_port("mysql_db", timeout=30.0),
+        user="root",
+        password=os.environ["MYSQL_ROOT_PASSWORD"],
+        cursorclass=pymysql.cursors.DictCursor,
+    )
+    # Start a transaction and rollback to reset state after each test class execution
+    yield conn
+    conn.close()
 
 ```
-$ pre-commit install
-```
-Now pre-commit will run automatically on git commit!
-The installed hooks will automatically run on the files you commit to Git. For running on all files use the command
+
+#### Using the get_connection and reset_or_save_db_state fixtures
+```python
+# content from test_state.py
+
+class TestSaveState:
+    # Test cases to check reset state works
+
+    def test_connection_insert(self, get_connection, reset_or_save_db_state):
+        reset_or_save_db_state("mysql_db", "superheroes")
+
+        conn = get_connection
+        # setup: insert new data
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO superheroes (name, cape, height_cm, weigth_kg)
+                VALUES('Dr. Strange', true, 188, 82)
+                """
+            )
+            conn.commit()
+            cur.execute("SELECT * FROM superheroes WHERE name = 'Dr. Strange'")
+            rows = cur.fetchall()
+            assert len(rows) == 1
 
 ```
-$ pre-commit run --all-files
-```
-All installed hooks can be viewed and added in the `.pre-commit-config.yaml` file.
 
-
-For updating added hooks to the latest version run:
-```
-$ pre-commit autoupdate
-```
-
-### Documentation
-Documentation: [pre-commit](https://pre-commit.com/ "pre-commit's HomePage")
-
----
-### Using poetry
-
-This repository uses poetry for dependency management.
-
-Install (recommended):
-```
-$ curl -sSL https://install.python-poetry.org | python3 -
-```
-
-Install using pip:
-```
-$ pip install poetry
-```
-Once installed run the following command from the root directory:
-
-```
-$ poetry install
-```
-
----
-### Using PyTest ###
-
-__Note!__ Before running your tests make sure that Docker Engine or a docker daemon is running on your machine.
-
-Run tests by
-```
-$ poetry run python -m pytest
-```
----
+NOTE: Use the examples in the project folder _*tests/*_ for inspiration on how to use __pytest-asteroid__ and examples of test file structure.
