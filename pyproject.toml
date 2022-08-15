@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytest-asteroid"
-version = "0.4.0" # major.minor.patch managed by the developer(s)
+version = "0.4.1"
 description = "PyTest plugin for docker-based testing on database images"
 authors = ["Emil Buus Sauer-Strømberg <emil.sauer@gmail.com>"]
 license = "Apache-2.0"

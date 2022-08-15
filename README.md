@@ -1,27 +1,34 @@
-# README
+# Overview
 
-__ASTEROID__:
-Automated, Solution for Testing Efficiently on Replicable, Operative, and Isolated Databases.
+### __ASTEROID__: Automated, Solution for Testing Efficiently on Replicable, Operative, and Isolated Databases.
 
 This pytest plugin is made for testing with MySQL docker images and is based on the great [lovely-pytest-docker](https://github.com/lovelysystems/lovely-pytest-docker "lovely-pytest-docker GitHub") plugin by Lovely Systems.
-__pytest-asteroid__ extends the lovely-pytest-docker plugin by adding an availability check to make sure the MySQL image is ready for connection before running the database test suite and it also includes a simple reset state functionality to handle state dependency issues between tests.
+
+__pytest-asteroid__ extends the lovely-pytest-docker plugin by adding:
+- an availability check to make sure the MySQL image is ready for connection before running the database test suite.
+- a simple reset state functionality to handle state dependency issues between tests.
 
 ---
 ## How do I get set up?
 
-In order to use ASTEROID make sure to have the following environmental variables set for the test DB docker image:
-* MYSQL_DATABASE
-* MYSQL_ROOT_PASSWORD
+### Dependencies
+Make sure your system has [Docker Engine](https://docs.docker.com/engine/install/) installed and that the docker daemon is running before executing your tests.
 
 ### Installation
 
-Install __pytest-asteroid__ using pip or poetry.
+Install __pytest-asteroid__ using pip or poetry. We prefer to use [poetry](https://python-poetry.org/) as it reduces the amount of files needed in the project and simplifies dependency management and virtual environments.
+
+_Install with poetry:_
 ```shell
 $ poetry add pytest-asteroid --dev
 ```
 
 ---
 ## Examples of usage
+
+In order to use ASTEROID make sure to have the following environmental variables set for the test DB docker image:
+* MYSQL_DATABASE
+* MYSQL_ROOT_PASSWORD
 
 #### Using the get_docker_db_port fixture
 ```python
@@ -81,4 +88,5 @@ class TestSaveState:
 
 ```
 
-NOTE: Use the examples in the project folder _*tests/*_ for inspiration on how to use __pytest-asteroid__ and examples of test file structure.
+### Clarification
+Use the examples in the project repository folder _*tests/*_ for inspiration on how to use __pytest-asteroid__ and to see examples of test file structure.
